@@ -4,7 +4,6 @@ import Todos from './components/Todos.vue'
 
 <template>
   <main>
-    <Upload />
     <Todos />
   </main>
 </template>
