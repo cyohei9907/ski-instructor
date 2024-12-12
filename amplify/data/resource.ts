@@ -23,7 +23,7 @@ const schema = a.schema({
       bio: a.string(),                // 自我介绍
       specialties: a.string().array(),        // 擅长板
       avatar: a.string(),                        // 头像 URL
-      photoWall: a.string().array(), // 照片墙（数组，URL）
+      photoWall: a.string(), // 照片墙（对应的url地址）
       skiCertificates: a.string().array(), // 滑雪证件（数组）
     })
     .authorization((allow) => [allow.publicApiKey()]),
@@ -31,7 +31,7 @@ const schema = a.schema({
   Course: a.model({
     instructor: a.id(),          // 教练（外键，关联 instructor 表）
     name: a.string(),               // 课程名
-    photoWall: a.string().array(),  // 课程照片墙
+    photoWall: a.string(),          // 照片墙（对应的url地址）
     price: a.integer(),             // 价格
     targetAudience: a.string(),     // 授课对象
     description: a.string(),        // 课程介绍
