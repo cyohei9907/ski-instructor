@@ -41,15 +41,15 @@ function createInstructor() {
   }
   const newInstructor = {
     nickname: form.value.nickname,
-    location: form.value.location.split(';').map((s) => s.trim()),
-    skiResorts: form.value.skiResorts.split(';').map((s) => s.trim()),
+    location: form.value.location.split(',').map((s) => s.trim()),
+    skiResorts: form.value.skiResorts.split(',').map((s) => s.trim()),
     bloodType: form.value.bloodType,
     zodiac: form.value.zodiac,
     bio: form.value.bio,
-    specialties: form.value.specialties.split(';').map((s) => s.trim()),
+    specialties: form.value.specialties.split(',').map((s) => s.trim()),
     avatar: form.value.avatar,
     photoWall: form.value.photoWall,
-    skiCertificates: form.value.skiCertificates.split(';').map((s) => s.trim()),
+    skiCertificates: form.value.skiCertificates.split(',').map((s) => s.trim()),
   };
 
   client.models.Instructor.create(newInstructor).then((r) => {
@@ -147,14 +147,14 @@ onMounted(() => {
     <!-- 添加教练表单 -->
     <div class="form-container">
     <h3>教练信息表</h3>
-      <form @submit.prevent="createInstructor" style="width: 450px;">
+      <form @submit.prevent="createInstructor" style="width: 350px;">
         <div>
           <label for="nickname">昵称：</label>
           <input id="nickname" v-model="form.nickname" type="text" required />
         </div>
         <div>
           <label for="avatar">头像：</label>
-          <input id="avatar" type="file" style="width: 100px;"/>
+          <input id="avatar" type="file" style="width: 100px;" required/>
           <button id="upload-display-picture" @click="uploadAvatarImage" type="button">上传</button>
         </div>
         <div>
@@ -223,7 +223,7 @@ form div {
 
 label {
   width: 20%; /* 调整为 20% */
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #333;
 }
@@ -258,7 +258,7 @@ button:hover {
 }
 
 button[type="button"] {
-  background-color: #6c757d;
+  background-color: #4397b6;
 }
 
 button[type="button"]:hover {
