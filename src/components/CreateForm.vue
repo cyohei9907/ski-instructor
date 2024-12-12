@@ -4,7 +4,6 @@ import type { Schema } from '../../amplify/data/resource';
 import { generateClient } from 'aws-amplify/data';
 import { uploadData } from "aws-amplify/storage";
 
-
 const client = generateClient<Schema>();
 
 // 响应式变量
@@ -30,20 +29,31 @@ function generateId() {
 
 // 创建教练
 function createInstructor() {
+  // 检查 avatar 和 photoWall 是否为空
+  if (!form.value.avatar) {
+    alert("请上传头像！");
+    return; // 中止操作
+  }
+
+  if (!form.value.photoWall) {
+    alert("请上传展示用照片墙！");
+    return; // 中止操作
+  }
   const newInstructor = {
     nickname: form.value.nickname,
-    location: form.value.location.split(',').map((s) => s.trim()),
-    skiResorts: form.value.skiResorts.split(',').map((s) => s.trim()),
+    location: form.value.location.split(';').map((s) => s.trim()),
+    skiResorts: form.value.skiResorts.split(';').map((s) => s.trim()),
     bloodType: form.value.bloodType,
     zodiac: form.value.zodiac,
     bio: form.value.bio,
-    specialties: form.value.specialties.split(',').map((s) => s.trim()),
+    specialties: form.value.specialties.split(';').map((s) => s.trim()),
     avatar: form.value.avatar,
     photoWall: form.value.photoWall,
-    skiCertificates: form.value.skiCertificates.split(',').map((s) => s.trim()),
+    skiCertificates: form.value.skiCertificates.split(';').map((s) => s.trim()),
   };
 
   client.models.Instructor.create(newInstructor).then((r) => {
+    console.log("Instructor created", r);
     fetchInstructors();
     resetForm();
   });
@@ -68,6 +78,7 @@ function uploadPhotoWallImage() {
           path: `picture-submissions/${uuid}/${photoWall?.files?.[0]?.name || 'default-filename'}`
         });
         console.log("Upload successful", result);
+        form.value.photoWall = `picture-submissions/${uuid}/`;
       } catch (e) {
         console.log("error", e);
       }
@@ -93,6 +104,7 @@ function uploadAvatarImage() {
           path: `picture-submissions/${uuid}/avatar/${avatar?.files?.[0]?.name || 'default-filename'}`
         });
         console.log("Upload successful", result);
+        form.value.avatar = `picture-submissions/${uuid}/avatar/`;
       } catch (e) {
         console.log("error", e);
       }
@@ -131,11 +143,10 @@ onMounted(() => {
 
 <template>
   <main>
-    <h1>教练信息表</h1>
 
     <!-- 添加教练表单 -->
     <div class="form-container">
-      <h2>新增教练</h2>
+    <h3>教练信息表</h3>
       <form @submit.prevent="createInstructor" style="width: 450px;">
         <div>
           <label for="nickname">昵称：</label>
@@ -181,9 +192,7 @@ onMounted(() => {
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 10px;">
-          <div>
-            <button type="submit">提交</button>
-          </div>
+            <button type="submit" style="width:220px;">提交</button>
         </div>
       </form>
     </div>
@@ -213,7 +222,7 @@ form div {
 }
 
 label {
-  width: 30%;
+  width: 20%; /* 调整为 20% */
   font-size: 16px;
   font-weight: bold;
   color: #333;
@@ -257,12 +266,14 @@ button[type="button"]:hover {
 }
 
 button[type="submit"] {
-  margin-right: 10px;
+  width: 50%; /* 按钮宽度 50% */
+  margin: 0 auto; /* 居中对齐 */
+  display: block; /* 独占一行 */
 }
 
 .form-container div:last-child {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; /* 居中对齐 */
   gap: 10px;
 }
 
@@ -292,5 +303,6 @@ p {
   color: #666;
   margin-top: 10px;
 }
+
 
 </style>
