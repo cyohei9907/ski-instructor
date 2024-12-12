@@ -39,12 +39,11 @@ function createInstructor() {
     bio: form.value.bio,
     specialties: form.value.specialties.split(',').map((s) => s.trim()),
     avatar: form.value.avatar,
-    photoWall: form.value.photoWall.split(',').map((s) => s.trim()),
+    photoWall: form.value.photoWall,
     skiCertificates: form.value.skiCertificates.split(',').map((s) => s.trim()),
   };
 
   client.models.Instructor.create(newInstructor).then((r) => {
-    console.log('创建成功', r);
     fetchInstructors();
     resetForm();
   });
