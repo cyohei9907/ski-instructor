@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import Todos from './components/Todos.vue'
+// import Todos from './components/Todos.vue'
+import CreateForm from './components/CreateForm.vue'
+
 </script>
 
 <template>
   <main>
-    <Todos />
+    <CreateForm />  
   </main>
 </template>
-

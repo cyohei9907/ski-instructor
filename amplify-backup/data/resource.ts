@@ -13,21 +13,19 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.publicApiKey()]),
   // 教练表
-  Instructor: a
-    .model({
-      nickname: a.string(),                      // 教练昵称
-      location: a.string().array(),           // 所在地区
-      skiResorts: a.string().array(),         // 所在雪场
-      bloodType: a.string(),          // 血型（可选）
-      zodiac: a.string(),             // 星座（可选）
-      bio: a.string(),                // 自我介绍
-      specialties: a.string().array(),        // 擅长板
-      avatar: a.string(),                        // 头像 URL
-      photoWall: a.string().array(), // 照片墙（数组，URL）
-      skiCertificates: a.string().array(), // 滑雪证件（数组）
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
-
+  Instructor: a.model({
+    nickname: a.string(),                      // 教练昵称
+    location: a.string().array(),           // 所在地区
+    skiResorts: a.string().array(),         // 所在雪场
+    bloodType: a.string(),          // 血型（可选）
+    zodiac: a.string(),             // 星座（可选）
+    bio: a.string(),                // 自我介绍
+    specialties: a.string().array(),        // 擅长板
+    avatar: a.string(),                        // 头像 URL
+    photoWall: a.string().array(), // 照片墙（数组，URL）
+    skiCertificates: a.string().array(), // 滑雪证件（数组）
+  })
+  .authorization((allow) => [allow.publicApiKey()]),
   Course: a.model({
     instructor: a.id(),          // 教练（外键，关联 instructor 表）
     name: a.string(),               // 课程名
