@@ -175,10 +175,8 @@ onMounted(() => {
           <label for="bio">自我介绍：</label>
           <textarea id="bio" v-model="form.bio"></textarea>
         </div>
-
-
         <div>
-          <label for="photoWall">照片墙：</label>
+          <label for="photoWall">展示用照片墙：</label>
           <input id="photoWall" type="file" multiple style="width: 100px;"/>
           <button id="upload-display-picture" @click="uploadPhotoWallImage" type="button">上传</button>
         </div>
