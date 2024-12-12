@@ -169,7 +169,7 @@ onMounted(() => {
     </div>
     <!-- 添加教练表单 -->
     <div class="form-container">
-    <h3>教练信息表</h3>
+    <h3>教练信息表</h3><text style="color:coral;">(如果创建后想修改可重复创建)</text>
       <form @submit.prevent="createInstructor" style="width: 350px;">
         <div>
           <label for="nickname">昵称：</label>
