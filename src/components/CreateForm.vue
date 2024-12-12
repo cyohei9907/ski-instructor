@@ -8,6 +8,7 @@ const client = generateClient<Schema>();
 
 // 响应式变量
 const instructors = ref<Array<Schema['Instructor']["type"]>>([]); // 教练列表
+const isUploading = ref(false);
 const form = ref({
   nickname: '',
   location: '',
@@ -54,39 +55,63 @@ function createInstructor() {
 
   client.models.Instructor.create(newInstructor).then((r) => {
     console.log("Instructor created", r);
-    fetchInstructors();
-    resetForm();
+    alert("教练创建成功！");
+    window.location.reload();
   });
 }
 
 // 照片墙上传
 function uploadPhotoWallImage() {
   const photoWall = document.getElementById('photoWall') as HTMLInputElement;
-  const fileReader = new FileReader();
+  isUploading.value = true; // 设置上传中状态
   if (photoWall?.files && photoWall.files.length > 0) {
-    fileReader.readAsArrayBuffer(photoWall.files[0]);
+    const files = Array.from(photoWall.files); // 将 FileList 转换为数组
+    const uploadedUrls: string[] = []; // 存储上传成功后的文件路径
+
+    files.forEach((file) => {
+      const fileReader = new FileReader();
+
+      fileReader.readAsArrayBuffer(file); // 读取文件为 ArrayBuffer
+
+      fileReader.onload = async (event) => {
+        if (event.target) {
+          console.log(`Complete File read successfully: ${file.name}`, event.target.result);
+
+          try {
+            // 上传文件到 S3
+            const result = await uploadData({
+              data: event.target.result as ArrayBuffer,
+              path: `picture-submissions/${uuid}/${file.name}`,
+            });
+
+            console.log(`Upload successful: ${file.name}`, result);
+
+            // 将上传成功的文件路径添加到数组
+            const fileUrl = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/${file.name}`;
+            uploadedUrls.push(fileUrl);
+
+            // 更新 form.value.photoWall
+            form.value.photoWall = uploadedUrls.join(',');
+          } catch (error) {
+            console.error(`Error uploading file: ${file.name}`, error);
+          } finally {
+            isUploading.value = false; // 恢复状态
+          }
+        }
+      };
+
+      fileReader.onerror = (error) => {
+        console.error(`Error reading file: ${file.name}`, error);
+        isUploading.value = false; // 恢复状态
+      };
+    });
   } else {
     console.log("No file selected");
   }
-
-  fileReader.onload = async (event) => {
-    if (event.target) {
-      console.log("Complete File read successfully!", event.target.result);
-      try {
-        const result = await uploadData({
-          data: event.target.result as ArrayBuffer,
-          path: `picture-submissions/${uuid}/${photoWall?.files?.[0]?.name || 'default-filename'}`
-        });
-        console.log("Upload successful", result);
-        form.value.photoWall = `picture-submissions/${uuid}/`;
-      } catch (e) {
-        console.log("error", e);
-      }
-    }
-  };
 }
 
 function uploadAvatarImage() {
+  isUploading.value = true; // 设置上传中状态
   const avatar = document.getElementById('avatar') as HTMLInputElement;
   const fileReader = new FileReader();
   if (avatar?.files && avatar.files.length > 0) {
@@ -104,12 +129,22 @@ function uploadAvatarImage() {
           path: `picture-submissions/${uuid}/avatar/${avatar?.files?.[0]?.name || 'default-filename'}`
         });
         console.log("Upload successful", result);
-        form.value.avatar = `picture-submissions/${uuid}/avatar/`;
+        if (avatar?.files && avatar.files.length > 0) {
+          form.value.avatar = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/avatar/${avatar?.files[0].name}`;
+        } else {
+          console.log("No file selected");
+        }
       } catch (e) {
         console.log("error", e);
+      } finally {
+        isUploading.value = false; // 恢复状态
       }
     }
   };
+  fileReader.onerror = (error) => {
+    isUploading.value = false; // 恢复状态
+  };
+
 }
 
 // 获取教练列表
@@ -117,22 +152,6 @@ function fetchInstructors() {
   client.models.Instructor.list().then((data) => {
     instructors.value = data.data || [];
   });
-}
-
-// 重置表单
-function resetForm() {
-  form.value = {
-    nickname: '',
-    location: '',
-    skiResorts: '',
-    bloodType: '',
-    zodiac: '',
-    bio: '',
-    specialties: '',
-    avatar: '',
-    photoWall: '',
-    skiCertificates: '',
-  };
 }
 
 // 在组件挂载时获取教练列表
@@ -144,6 +163,10 @@ onMounted(() => {
 <template>
   <main>
 
+    <!-- 全屏遮罩 -->
+    <div v-if="isUploading" class="overlay">
+      <div class="loading">Uploading... Please wait</div>
+    </div>
     <!-- 添加教练表单 -->
     <div class="form-container">
     <h3>教练信息表</h3>
@@ -303,6 +326,23 @@ p {
   color: #666;
   margin-top: 10px;
 }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
 
+.loading {
+  font-size: 20px;
+  color: #fff;
+  font-weight: bold;
+}
 
 </style>
