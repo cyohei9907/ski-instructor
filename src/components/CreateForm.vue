@@ -17,9 +17,9 @@ function listInstructors() {
   }); 
 }
 
-function createTodo() {
-  client.models.Todo.create({
-    content: window.prompt("Instructors nickname")
+function createInstructor() {
+  client.models.Instructor.create({
+    nickname: window.prompt("Instructors nickname")
   }).then(() => {
     // After creating a new todo, update the list of todos
     listInstructors();
@@ -36,7 +36,7 @@ function createTodo() {
 <template>
   <main>
     <h1>My todos</h1>
-    <button @click="createTodo">+ new</button>
+    <button @click="createInstructor">+ new</button>
     <ul>
       <li 
         v-for="ins in Instructors" 
