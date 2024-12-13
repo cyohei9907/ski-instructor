@@ -20,6 +20,7 @@ const form = ref({
   avatar: '',
   phonenumber: '',
   photoWall: '',
+  videoWall: '',
   skiCertificates: '',
   qrCode: '',
 });
@@ -57,7 +58,8 @@ function createInstructor() {
     specialties: form.value.specialties.split(',').map((s) => s.trim()),
     avatar: form.value.avatar,
     phonenumber: form.value.phonenumber,
-    photoWall: form.value.photoWall,
+    videoWall: form.value.videoWall.split(',').map((s) => s.trim()),
+    photoWall: form.value.photoWall.split(',').map((s) => s.trim()),
     skiCertificates: form.value.skiCertificates.split(',').map((s) => s.trim()),
   };
 
@@ -174,7 +176,7 @@ function uploadQrcodeImage() {
         });
         console.log("Upload successful", result);
         if (qrcode?.files && qrcode.files.length > 0) {
-          form.value.qrCode = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/qrcode/${avatar?.files[0].name}`;
+          form.value.qrCode = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/qrcode/${qrcode?.files[0].name}`;
         } else {
           console.log("No file selected");
         }
@@ -188,6 +190,55 @@ function uploadQrcodeImage() {
   fileReader.onerror = (error) => {
     isUploading.value = false; // 恢复状态
   };
+}
+
+function uploadVideoWall(){
+  const videoWall = document.getElementById('videoWall') as HTMLInputElement;
+  isUploading.value = true; // 设置上传中状态
+  if (videoWall?.files && videoWall.files.length > 0) {
+    const files = Array.from(videoWall.files); // 将 FileList 转换为数组
+    const uploadedUrls: string[] = []; // 存储上传成功后的文件路径
+
+    files.forEach((file) => {
+      const fileReader = new FileReader();
+
+      fileReader.readAsArrayBuffer(file); // 读取文件为 ArrayBuffer
+
+      fileReader.onload = async (event) => {
+        if (event.target) {
+          console.log(`Complete File read successfully: ${file.name}`, event.target.result);
+
+          try {
+            // 上传文件到 S3
+            const result = await uploadData({
+              data: event.target.result as ArrayBuffer,
+              path: `picture-submissions/${uuid}/${file.name}`,
+            });
+
+            console.log(`Upload successful: ${file.name}`, result);
+
+            // 将上传成功的文件路径添加到数组
+            const fileUrl = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/videoWall/${file.name}`;
+            uploadedUrls.push(fileUrl);
+
+            // 更新 form.value.photoWall
+            form.value.videoWall = uploadedUrls.join(',');
+          } catch (error) {
+            console.error(`Error uploading file: ${file.name}`, error);
+          } finally {
+            isUploading.value = false; // 恢复状态
+          }
+        }
+      };
+
+      fileReader.onerror = (error) => {
+        console.error(`Error reading file: ${file.name}`, error);
+        isUploading.value = false; // 恢复状态
+      };
+    });
+  } else {
+    console.log("No file selected");
+  }
 }
 
 // 获取教练列表
@@ -248,6 +299,13 @@ onMounted(() => {
           <div style="display: flex; width: 100%;">
             <input id="photoWall" type="file" multiple />
             <button @click="uploadPhotoWallImage" type="button">上传</button>
+          </div>
+        </div>
+        <div class="input-area">
+          <label for="videoWall">展示用视频(复数可选)：</label>
+          <div style="display: flex; width: 100%;">
+            <input id="videoWall" type="file" multiple />
+            <button @click="uploadVideoWall" type="button">上传</button>
           </div>
         </div>
         <div class="input-area">
