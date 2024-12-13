@@ -22,7 +22,7 @@ const form = ref({
   photoWall: '',
   videoWall: '',
   skiCertificates: '',
-  qrCode: '',
+  qrcode: '',
 });
 
 const uuid = generateId();
@@ -44,7 +44,7 @@ function createInstructor() {
     return; // 中止操作
   }
 
-  if (!form.value.qrCode) {
+  if (!form.value.qrcode) {
     alert("请上传联络用QRcode！");
     return; // 中止操作
   }
@@ -60,6 +60,7 @@ function createInstructor() {
     phonenumber: form.value.phonenumber,
     videoWall: form.value.videoWall.split(',').map((s) => s.trim()),
     photoWall: form.value.photoWall.split(',').map((s) => s.trim()),
+    qrcode: form.value.qrcode,
     skiCertificates: form.value.skiCertificates.split(',').map((s) => s.trim()),
   };
 
@@ -176,7 +177,7 @@ function uploadQrcodeImage() {
         });
         console.log("Upload successful", result);
         if (qrcode?.files && qrcode.files.length > 0) {
-          form.value.qrCode = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/qrcode/${qrcode?.files[0].name}`;
+          form.value.qrcode = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/qrcode/${qrcode?.files[0].name}`;
         } else {
           console.log("No file selected");
         }

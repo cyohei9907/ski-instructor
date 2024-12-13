@@ -18,6 +18,5 @@ import CreateForm from './components/CreateForm.vue'
   html, body {
     overscroll-behavior: none; /* 禁用回弹 */
     height: 100%;
-    margin: 0;
   }
 </style>
