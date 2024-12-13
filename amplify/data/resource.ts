@@ -23,6 +23,7 @@ const schema = a.schema({
       bio: a.string(),                // 自我介绍
       specialties: a.string().array(),        // 擅长板
       avatar: a.string(),                        // 头像 URL
+      phonenumber: a.string(),                   // 电话号码
       photoWall: a.string(), // 照片墙（对应的url地址）
       skiCertificates: a.string().array(), // 滑雪证件（数组）
     })

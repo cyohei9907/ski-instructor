@@ -9,3 +9,10 @@ import CreateForm from './components/CreateForm.vue'
     <CreateForm />  
   </main>
 </template>
+<style>
+  main {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+</style>
