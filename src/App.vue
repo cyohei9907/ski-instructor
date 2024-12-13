@@ -15,4 +15,9 @@ import CreateForm from './components/CreateForm.vue'
     height: 100vh;
     font-family: Arial, sans-serif;
   }
+  html, body {
+    overscroll-behavior: none; /* 禁用回弹 */
+    height: 100%;
+    margin: 0;
+  }
 </style>
