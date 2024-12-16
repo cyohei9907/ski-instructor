@@ -262,7 +262,7 @@ onMounted(() => {
     </div>
     <!-- 添加教练表单 -->
     <div class="form-container">
-    <h3>教练信息表</h3><text style="color:coral;">(如果创建后想修改可重复创建)</text>
+    <h3>教练信息表</h3><text style="color:coral;">(如果想修改已经创建的内容可以填入昵称后加上想修改的内容即可，第二日即可看到更新)</text>
       <form @submit.prevent="createInstructor" style="width: 350px;">
         <div class="input-area">
           <label for="nickname">昵称：</label>
