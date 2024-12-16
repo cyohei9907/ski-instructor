@@ -92,13 +92,13 @@ function uploadPhotoWallImage() {
             // 上传文件到 S3
             const result = await uploadData({
               data: event.target.result as ArrayBuffer,
-              path: `picture-submissions/${uuid}/${file.name}`,
+              path: `picture-submissions/${uuid}/pictureWall/${file.name}`,
             });
 
             console.log(`Upload successful: ${file.name}`, result);
 
             // 将上传成功的文件路径添加到数组
-            const fileUrl = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/${file.name}`;
+            const fileUrl = `https://amplify-d2o7poh9es00p9-ma-amplifyteamdrivebucket28-rgerxapapxsr.s3.ap-northeast-1.amazonaws.com/picture-submissions/${uuid}/pictureWall/${file.name}`;
             uploadedUrls.push(fileUrl);
 
             // 更新 form.value.photoWall
@@ -213,7 +213,7 @@ function uploadVideoWall(){
             // 上传文件到 S3
             const result = await uploadData({
               data: event.target.result as ArrayBuffer,
-              path: `picture-submissions/${uuid}/${file.name}`,
+              path: `picture-submissions/${uuid}/videoWall/${file.name}`,
             });
 
             console.log(`Upload successful: ${file.name}`, result);
