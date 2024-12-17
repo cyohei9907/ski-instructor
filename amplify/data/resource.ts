@@ -24,7 +24,7 @@ const schema = a.schema({
       specialties: a.string().array(),        // 擅长板
       avatar: a.string(),                        // 头像 URL
       phonenumber: a.string(),                   // 电话号码
-      photoWall: a.json(), // 照片墙（对应的url地址）
+      photoWall: a.string().array(), // 照片墙（对应的url地址）
       qrcode: a.string(), // 二维码（对应的url地址）
       videoWall: a.string().array(), // 视频墙（对应的url地址）
       skiCertificates: a.string().array(), // 滑雪证件（数组）
